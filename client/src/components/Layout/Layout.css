@@ -33,3 +33,12 @@
   display: block;
   padding: 0;
 }
+
+.layout__footer {
+  flex-shrink: 0;
+  padding: 1rem;
+  background: blue;
+  color: white;
+  text-align: left;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}

@@ -10,6 +10,7 @@ const cartReducer = (state, action) => {
       return {
         ...state,
         items: action.payload,
+        loading: false,
       };
   }
 };
@@ -17,6 +18,7 @@ const cartReducer = (state, action) => {
 function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, {
     items: [],
+    loading: true,
   });
 
   useSubscription(CART_UPDATED, {
@@ -29,7 +31,12 @@ function CartProvider({ children }) {
   });
 
   return (
-    <CartContext.Provider value={{ cart: state.items, dispatch }}>
+    <CartContext.Provider
+      value={{
+        cart: state.items,
+        isCartLoading: state.loading,
+        dispatch,
+      }}>
       {children}
     </CartContext.Provider>
   );

@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { useCartContext } from '../../context/CartContext';
 
 const Layout = ({ children }) => {
-  const { cart, dispatch } = useCartContext();
+  const { cart, isCartLoading, dispatch } = useCartContext();
+
+  if (isCartLoading) return <div>Loading...</div>;
 
   return (
     <div className="layout">
@@ -19,7 +21,9 @@ const Layout = ({ children }) => {
       </nav>
 
       <main className="layout__children">{children}</main>
-      <footer>footer</footer>
+      <footer className="layout__footer">
+        &copy; {new Date().getFullYear()} Michaels
+      </footer>
     </div>
   );
 };
