@@ -2,21 +2,28 @@ import './App.css';
 import { useEffect } from 'react';
 import AppRouter from './routes/index.routes';
 import { useCartStore } from './stores/cart.store';
-import { GET_CART } from './graphql/queries';
+import { GET_CART, GET_ITEMS } from './graphql/queries';
 import { useQuery } from '@apollo/client';
+import { useItemsStore } from './stores/items.store';
 
 function App() {
-  const { initState } = useCartStore();
+  const { initState: initCartsState } = useCartStore();
+  const { dispatch } = useItemsStore();
 
-  const { data, loading, error } = useQuery(GET_CART);
+  const { data: itemsData, loading: itemsLoading } = useQuery(GET_ITEMS);
+  const { data: cartsData, loading: cartsLoading, error } = useQuery(GET_CART);
 
   useEffect(() => {
-    if (data && !loading) {
-      initState(data.cart);
+    if (cartsData && !cartsLoading) {
+      initCartsState(cartsData.cart);
     }
-  }, [loading, data]);
 
-  if (loading) return <p>Loading...</p>;
+    if (itemsData && !itemsLoading) {
+      dispatch({ items: itemsData.items });
+    }
+  }, [cartsLoading, itemsData, itemsLoading, cartsData]);
+
+  if (itemsLoading) return <p>Loading...</p>;
 
   if (error) return <p>Error</p>;
 

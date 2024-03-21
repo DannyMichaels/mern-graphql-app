@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useState, useMemo } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_ITEMS } from '../graphql/queries';
+import { useMutation } from '@apollo/client';
 import { ADD_ITEM_TO_CART } from '../graphql/mutations';
 import './Home.css';
 import { useCartStore } from '../stores/cart.store';
+import { useItemsStore } from '../stores/items.store';
 
 export default function Home() {
-  const { data, loading, error } = useQuery(GET_ITEMS);
+  const { items } = useItemsStore();
   const { dispatch } = useCartStore();
 
   const [addItemToCart] = useMutation(ADD_ITEM_TO_CART, {
@@ -16,15 +16,12 @@ export default function Home() {
     },
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
-
   return (
     <div className="home-container">
       <h1>Home</h1>
 
       <div className="items">
-        {data.items.map((item) => (
+        {items.map((item) => (
           <Item item={item} addItemToCart={addItemToCart} key={item.id} />
         ))}
       </div>
@@ -39,7 +36,7 @@ function Item({ item, addItemToCart }) {
   );
 
   const itemImage = useMemo(() => {
-    if (item?.variantImages) {
+    if (item?.variantImages?.length) {
       return item.variantImages[item.variants.indexOf(selectedVariant)];
     }
     return item.image;

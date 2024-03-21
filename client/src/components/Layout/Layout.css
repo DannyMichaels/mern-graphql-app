@@ -26,6 +26,14 @@
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
 
+.layout__nav__left,
+.layout__nav__right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
 .layout__nav__left > a,
 .layout__nav__right > a {
   color: white;

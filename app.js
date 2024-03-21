@@ -31,6 +31,7 @@ const schema = buildSchema(`
     addItemToCart(id: ID!, quantity: Int, selectedVariant: String): Cart
     removeItemFromCart(id: ID!): Cart
     modifyItemInCart(id: ID!, quantity: Int, selectedVariant: String): Cart
+    createItem(name: String!, price: Float!, image: String!, variants: [String], variantImages: [String]): Item
   }
 `);
 
@@ -94,6 +95,7 @@ const updateCartTotalPrice = () => (cart.totalPrice = calcTotalCartPrice());
 const resolvers = {
   items: () => items,
   cart: () => cart,
+  cartItems: () => cart.items,
   cartUpdated: () => cart,
   addItemToCart: ({ id, quantity = 1, selectedVariant = null }) => {
     const item = items.find((item) => item.id === id);
@@ -133,6 +135,23 @@ const resolvers = {
     }
 
     return cart;
+  },
+
+  createItem: ({ name, price, image, variants = [], variantImages = [] }) => {
+    if (!name || !price || !image)
+      throw new Error('name, price, and image are required');
+
+    console.log({ name, price, image, variants, variantImages });
+    const item = {
+      id: String(generateId()),
+      name,
+      price,
+      image,
+      variants,
+      variantImages,
+    };
+    items.push(item);
+    return item;
   },
 };
 

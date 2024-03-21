@@ -35,7 +35,7 @@ export default function Cart() {
             removeItemFromCart={removeItemFromCart}
             modifyItemInCart={modifyItemInCart}
             itemImage={(item, selectedVariant) => {
-              if (item?.variantImages) {
+              if (item?.variantImages?.length) {
                 return item.variantImages[
                   item.variants.indexOf(selectedVariant)
                 ];

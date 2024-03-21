@@ -78,3 +78,28 @@ export const MODIFY_ITEM_IN_CART = gql`
     }
   }
 `;
+
+export const CREATE_ITEM = gql`
+  mutation CreateItem(
+    $name: String!
+    $price: Float!
+    $image: String!
+    $variants: [String] = []
+    $variantImages: [String] = []
+  ) {
+    createItem(
+      name: $name
+      price: $price
+      image: $image
+      variants: $variants
+      variantImages: $variantImages
+    ) {
+      id
+      name
+      price
+      image
+      variants
+      variantImages
+    }
+  }
+`;

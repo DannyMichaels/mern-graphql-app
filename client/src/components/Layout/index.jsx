@@ -12,6 +12,7 @@ const Layout = ({ children }) => {
       <nav className="layout__nav">
         <div className="layout__nav__left">
           <Link to="/">Home</Link>
+          <Link to="/create-item">Create Item</Link>
         </div>
 
         <div className="layout__nav__right">
