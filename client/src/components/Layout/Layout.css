@@ -1,10 +1,4 @@
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
-
-body {
+.layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -17,19 +11,25 @@ body {
   background-color: #f7f7f7;
 }
 
-.inner-column {
-  display: flex;
-  width: 98%;
-  max-width: 1100px;
-  margin-right: auto;
-  margin-left: auto;
-  padding: 10px;
-  border: 1px solid red;
-  justify-content: center;
-  align-items: center;
+.layout__children {
+  flex-grow: 1;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.layout__nav {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  justify-content: space-between;
+  background: blue;
+  align-items: center;
+  padding: 1rem;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.layout__nav__left > a,
+.layout__nav__right > a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 0;
 }
