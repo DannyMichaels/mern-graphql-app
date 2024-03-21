@@ -66,8 +66,13 @@ let items = [
   },
 ];
 
+// let cart = {
+//   items: [items[0], items[1]],
+//   totalPrice: items[0].price + items[1].price,
+// };
+
 let cart = {
-  items: [items[0]],
+  items: [],
   totalPrice: 0,
 };
 
