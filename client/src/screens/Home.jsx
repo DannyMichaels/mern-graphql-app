@@ -4,22 +4,20 @@ import { useQuery, useMutation } from '@apollo/client';
 import { GET_ITEMS } from '../graphql/queries';
 import { ADD_ITEM_TO_CART } from '../graphql/mutations';
 import './Home.css';
-import { useCartContext } from '../context/CartContext';
+import { useCartStore } from '../stores/cart.store';
 
 export default function Home() {
   const { data, loading, error } = useQuery(GET_ITEMS);
-  const { dispatch } = useCartContext();
+  const { dispatch } = useCartStore();
 
   const [addItemToCart] = useMutation(ADD_ITEM_TO_CART, {
     onCompleted: (data) => {
-      dispatch({
-        type: 'UPDATE_CART',
-        payload: data.addItemToCart,
-      });
+      dispatch(data.addItemToCart);
     },
   });
 
   if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error</p>;
 
   return (
     <div className="home-container">

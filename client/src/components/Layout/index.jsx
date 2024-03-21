@@ -1,10 +1,9 @@
+import { useCartStore } from '../../stores/cart.store';
 import './Layout.css';
 import { Link } from 'react-router-dom';
-import { useCartContext } from '../../context/CartContext';
 
 const Layout = ({ children }) => {
-  const { cart, isCartLoading, dispatch } = useCartContext();
-
+  const { isCartLoading, ...cart } = useCartStore();
   if (isCartLoading) return <div>Loading...</div>;
 
   return (

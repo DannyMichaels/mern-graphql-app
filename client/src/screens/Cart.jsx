@@ -1,34 +1,26 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { useCartContext } from '../context/CartContext';
 import { useMutation } from '@apollo/client';
 import {
   MODIFY_ITEM_IN_CART,
   REMOVE_ITEM_FROM_CART,
 } from '../graphql/mutations';
+import { useCartStore } from '../stores/cart.store';
 
 export default function Cart() {
-  const { cart, dispatch } = useCartContext();
+  const { dispatch, ...cart } = useCartStore();
 
   const [removeItemFromCart] = useMutation(REMOVE_ITEM_FROM_CART, {
     onCompleted: (data) => {
       const newCartState = data.removeItemFromCart;
-
-      dispatch({
-        type: 'UPDATE_CART',
-        payload: newCartState,
-      });
+      dispatch(newCartState);
     },
   });
 
   const [modifyItemInCart] = useMutation(MODIFY_ITEM_IN_CART, {
     onCompleted: (data) => {
       const newCartState = data.modifyItemInCart;
-
-      dispatch({
-        type: 'UPDATE_CART',
-        payload: newCartState,
-      });
+      dispatch(newCartState);
     },
   });
 
