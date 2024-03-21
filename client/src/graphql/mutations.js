@@ -50,13 +50,29 @@ export const REMOVE_ITEM_FROM_CART = gql`
   }
 `;
 
-export const MODIFY_ITEM_IN_CART_QUANTITY = gql`
-  mutation ModifyItemInCartQuantity($id: ID!, $quantity: Int!) {
-    modifyItemInCartQuantity(id: $id, quantity: $quantity) {
+export const MODIFY_ITEM_IN_CART = gql`
+  mutation ModifyItemInCart(
+    $id: ID!
+    $quantity: Int = 1
+    $selectedVariant: String
+  ) {
+    modifyItemInCart(
+      id: $id
+      quantity: $quantity
+      selectedVariant: $selectedVariant
+    ) {
       items {
         id
-        name
-        price
+        quantity
+        selectedVariant
+        item {
+          id
+          name
+          price
+          image
+          variants
+          variantImages
+        }
       }
       totalPrice
     }

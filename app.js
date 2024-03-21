@@ -30,8 +30,7 @@ const schema = buildSchema(`
   type Mutation {
     addItemToCart(id: ID!, quantity: Int, selectedVariant: String): Cart
     removeItemFromCart(id: ID!): Cart
-    modifyItemInCartQuantity(id: ID!, quantity: Int!): Cart
-    modifyItemInCartSelectedVariant(id: ID!, selectedVariant: String!): Cart
+    modifyItemInCart(id: ID!, quantity: Int, selectedVariant: String): Cart
   }
 `);
 
@@ -121,29 +120,18 @@ const resolvers = {
 
     return cart;
   },
-  modifyItemInCartQuantity: ({ id, quantity }) => {
-    const item = items.find((item) => item.id === id);
-    if (item) {
-      const index = cart.items.findIndex((item) => item.id === id);
-      if (index !== -1) {
-        cart.totalPrice -= cart.items[index].price * cart.items[index].quantity;
-        cart.items[index].quantity = quantity;
-        // cart.totalPrice += item.price * quantity;
-        updateCartTotalPrice();
-      }
+  modifyItemInCart: ({ id, quantity = 1, selectedVariant = null }) => {
+    const index = cart.items.findIndex((item) => item.id === id);
+
+    if (index !== -1) {
+      const item = cart.items[index];
+      // cart.totalPrice -= item.item.price * item.quantity;
+      item.quantity = quantity;
+      item.selectedVariant = selectedVariant;
+      // cart.totalPrice += item.item.price * item.quantity;
+      updateCartTotalPrice();
     }
-    return cart;
-  },
-  modifyItemInCartSelectedVariant: ({ id, selectedVariant }) => {
-    const item = items.find((item) => item.id === id);
-    if (item) {
-      const index = cart.items.findIndex((item) => item.id === id);
-      if (index !== -1) {
-        cart.items[index].selectedVariant = selectedVariant;
-        cart.items[index].item.image =
-          item.variantImages[item.variants.indexOf(selectedVariant)];
-      }
-    }
+
     return cart;
   },
 };
