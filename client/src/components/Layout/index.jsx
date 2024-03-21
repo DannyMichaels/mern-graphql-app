@@ -3,8 +3,7 @@ import './Layout.css';
 import { Link } from 'react-router-dom';
 
 const Layout = ({ children }) => {
-  const { isCartLoading, ...cart } = useCartStore();
-  if (isCartLoading) return <div>Loading...</div>;
+  const { ...cart } = useCartStore();
 
   return (
     <div className="layout">
