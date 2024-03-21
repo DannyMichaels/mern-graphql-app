@@ -1,0 +1,14 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.items {
+  border: 1px solid black;
+}
+
+.item {
+  border: 1px solid red;
+}

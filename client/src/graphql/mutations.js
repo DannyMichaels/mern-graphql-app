@@ -1,12 +1,17 @@
 import { gql } from '@apollo/client';
 
 export const ADD_ITEM_TO_CART = gql`
-  mutation AddItemToCart($id: ID!) {
-    addItemToCart(id: $id) {
+  mutation AddItemToCart($id: ID!, $quantity: Int = 1) {
+    addItemToCart(id: $id, quantity: $quantity) {
       items {
         id
-        name
-        price
+        quantity
+        selectedVariant
+        item {
+          id
+          name
+          price
+        }
       }
       totalPrice
     }
