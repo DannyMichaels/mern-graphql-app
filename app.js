@@ -28,7 +28,7 @@ const schema = buildSchema(`
   }
 
   type Mutation {
-    addItemToCart(id: ID!, quantity: Int): Cart
+    addItemToCart(id: ID!, quantity: Int, selectedVariant: String): Cart
     removeItemFromCart(id: ID!): Cart
     modifyItemInCartQuantity(id: ID!, quantity: Int!): Cart
     modifyItemInCartSelectedVariant(id: ID!, selectedVariant: String!): Cart
@@ -96,13 +96,14 @@ const resolvers = {
   items: () => items,
   cart: () => cart,
   cartUpdated: () => cart,
-  addItemToCart: ({ id, quantity = 1 }) => {
+  addItemToCart: ({ id, quantity = 1, selectedVariant = null }) => {
     const item = items.find((item) => item.id === id);
     if (item) {
       cart.items.push({
         id: String(generateId()),
         item,
         quantity,
+        selectedVariant,
       });
       // cart.totalPrice += item.price * quantity;
       updateCartTotalPrice();

@@ -26,8 +26,9 @@ export const GET_CART = gql`
           id
           name
           price
-          selectedVariant
           image
+          variants
+          variantImages
         }
       }
     }

@@ -7,7 +7,6 @@ export default function Cart() {
 
   const [removeItemFromCart] = useMutation(REMOVE_ITEM_FROM_CART, {
     onCompleted: (data) => {
-      console.log('removeItemFromCart', data);
       const newCartState = data.removeItemFromCart;
 
       dispatch({
@@ -17,6 +16,14 @@ export default function Cart() {
     },
   });
 
+  const itemImage = (item, selectedVariant) => {
+    console.log('itemImage', item, selectedVariant);
+    if (item?.variantImages) {
+      return item.variantImages[item.variants.indexOf(selectedVariant)];
+    }
+    return item.image;
+  };
+
   return (
     <div>
       <h1>Cart</h1>
@@ -24,9 +31,19 @@ export default function Cart() {
       <ul>
         {cart.items.map((cartItem) => (
           <li key={cartItem.id}>
-            id: {cartItem.id} | &nbsp;
+            cart item id: {cartItem.id} | &nbsp; item id {cartItem.item.id} |
+            &nbsp;
             <b>{cartItem.item.name}</b> | &nbsp; Price: ${cartItem.item.price}
             &nbsp; Quantity: {cartItem.quantity}&nbsp;
+            {cartItem.selectedVariant && (
+              <span>Variant: {cartItem.selectedVariant}</span>
+            )}
+            <img
+              // src={cartItem.item.image}
+              src={itemImage(cartItem.item, cartItem.selectedVariant)}
+              alt={cartItem.item.name}
+              width="50"
+            />
             <button
               onClick={() =>
                 removeItemFromCart({

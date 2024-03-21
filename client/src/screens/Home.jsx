@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ITEMS } from '../graphql/queries';
 import { ADD_ITEM_TO_CART } from '../graphql/mutations';
@@ -36,10 +36,20 @@ export default function Home() {
 
 function Item({ item, addItemToCart }) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState(() =>
+    item?.variants?.length > 1 ? item.variants[0] : null
+  );
+
+  const itemImage = useMemo(() => {
+    if (item?.variantImages) {
+      return item.variantImages[item.variants.indexOf(selectedVariant)];
+    }
+    return item.image;
+  }, [item, selectedVariant]);
 
   return (
     <div key={item.id} className="item">
-      <img src={item.image} alt={item.name} />
+      <img src={itemImage} alt={item.name} width="300" height="300" />
       <h3>{item.name}</h3>
       <p>${item.price}</p>
       <label htmlFor="quantity">Quantity:</label>
@@ -52,12 +62,25 @@ function Item({ item, addItemToCart }) {
           setQuantity(e.target.value);
         }}
       />
+
+      {item?.variants?.length > 1 && (
+        <select
+          value={selectedVariant}
+          onChange={(e) => setSelectedVariant(e.target.value)}>
+          {item.variants.map((variant, index) => (
+            <option key={variant} value={variant}>
+              {variant}
+            </option>
+          ))}
+        </select>
+      )}
       <button
         onClick={() =>
           addItemToCart({
             variables: {
               id: item.id,
               quantity: parseInt(quantity, 10),
+              selectedVariant,
             },
           })
         }>

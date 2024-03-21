@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer } from 'react';
 import { CART_UPDATED } from '../graphql/subscriptions';
-import { useSubscription } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
+import { GET_CART } from '../graphql/queries';
 
 const CartContext = createContext();
 
@@ -22,12 +23,21 @@ function CartProvider({ children }) {
     loading: true,
   });
 
-  useSubscription(CART_UPDATED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      console.log('cart updated', subscriptionData.data.cartUpdated);
+  // useSubscription(CART_UPDATED, {
+  //   onSubscriptionData: ({ subscriptionData }) => {
+  //     console.log('cart updated', subscriptionData.data.cartUpdated);
+  //     dispatch({
+  //       type: 'UPDATE_CART',
+  //       payload: subscriptionData.data.cartUpdated,
+  //     });
+  //   },
+  // });
+
+  useQuery(GET_CART, {
+    onCompleted: (data) => {
       dispatch({
         type: 'UPDATE_CART',
-        payload: subscriptionData.data.cartUpdated,
+        payload: data.cart,
       });
     },
   });
