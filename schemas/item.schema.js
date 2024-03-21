@@ -4,7 +4,6 @@ const itemSchema = `
     name: String!
     price: Float!
     image: String!
-    selectedVariant: String
     variants: [String]
     variantImages: [String]
   }

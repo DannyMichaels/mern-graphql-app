@@ -1,14 +1,35 @@
 import { gql } from '@apollo/client';
 
+// export const GET_CART = gql`
+//   query {
+//     cart {
+//       items {
+//         id
+//         name
+//         price
+//       }
+//       totalPrice
+//     }
+//   }
+// `;
+
 export const GET_CART = gql`
   query {
     cart {
+      totalPrice
       items {
         id
-        name
-        price
+        quantity
+        selectedVariant
+
+        item {
+          id
+          name
+          price
+          selectedVariant
+          image
+        }
       }
-      totalPrice
     }
   }
 `;
@@ -20,7 +41,6 @@ export const GET_ITEMS = gql`
       name
       price
       image
-      selectedVariant
       variants
       variantImages
     }

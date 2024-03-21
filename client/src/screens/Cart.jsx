@@ -7,6 +7,7 @@ export default function Cart() {
 
   const [removeItemFromCart] = useMutation(REMOVE_ITEM_FROM_CART, {
     onCompleted: (data) => {
+      console.log('removeItemFromCart', data);
       const newCartState = data.removeItemFromCart;
 
       dispatch({
@@ -21,13 +22,15 @@ export default function Cart() {
       <h1>Cart</h1>
       <h2> total: ${cart.totalPrice}</h2>
       <ul>
-        {cart.items.map((item) => (
-          <li key={item.id}>
-            {item.name}
+        {cart.items.map((cartItem) => (
+          <li key={cartItem.id}>
+            id: {cartItem.id} | &nbsp;
+            <b>{cartItem.item.name}</b> | &nbsp; Price: ${cartItem.item.price}
+            &nbsp; Quantity: {cartItem.quantity}&nbsp;
             <button
               onClick={() =>
                 removeItemFromCart({
-                  variables: { id: item.id },
+                  variables: { id: cartItem.id },
                 })
               }>
               Remove

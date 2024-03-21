@@ -3,12 +3,18 @@ import { gql } from '@apollo/client';
 export const CART_UPDATED = gql`
   subscription {
     cartUpdated {
+      totalPrice
       items {
         id
-        name
-        price
+        quantity
+        selectedVariant
+        item {
+          id
+          name
+          price
+          image
+        }
       }
-      totalPrice
     }
   }
 `;

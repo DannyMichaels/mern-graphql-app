@@ -1,6 +1,6 @@
 const cartSchema = `
   type Cart {
-      items: [Item]!
+      items: [CartItem]!
       totalPrice: Float!
     }
 `;

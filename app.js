@@ -2,7 +2,7 @@ const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
 const cors = require('cors');
-const { itemSchema, cartSchema } = require('./schemas');
+const { itemSchema, cartSchema, cartItemSchema } = require('./schemas');
 
 const app = express();
 
@@ -15,6 +15,8 @@ const schema = buildSchema(`
 
   ${cartSchema}
 
+  ${cartItemSchema}
+
   type Subscription {
     cartUpdated: Cart
   }
@@ -22,13 +24,14 @@ const schema = buildSchema(`
   type Query {
     items: [Item]!
     cart: Cart
+    cartItems: [CartItem]!
   }
 
   type Mutation {
     addItemToCart(id: ID!): Cart
     removeItemFromCart(id: ID!): Cart
-    modifyItemQuantity(id: ID!, quantity: Int!): Cart
-    modifyItemSelectedVariant(id: ID!, selectedVariant: String!): Cart
+    modifyItemInCartQuantity(id: ID!, quantity: Int!): Cart
+    modifyItemInCartSelectedVariant(id: ID!, selectedVariant: String!): Cart
   }
 `);
 
@@ -55,7 +58,6 @@ let items = [
   {
     id: '4',
     name: 'Shirt',
-    selectedVariant: 'Red',
     variants: ['Red', 'Blue'],
     variantImages: [
       'https://i.imgur.com/eVVBVcr.jpeg',
@@ -67,8 +69,11 @@ let items = [
 ];
 
 // let cart = {
-//   items: [items[0], items[1]],
-//   totalPrice: items[0].price + items[1].price,
+//   items: [
+//     { item: { ...items[0] }, quantity: 1, id: '1' },
+//     { item: { ...items[1] }, quantity: 2, id: '2' },
+//   ],
+//   totalPrice: items[0].price + items[1].price * 2,
 // };
 
 let cart = {
@@ -83,20 +88,25 @@ const resolvers = {
   addItemToCart: ({ id }) => {
     const item = items.find((item) => item.id === id);
     if (item) {
-      cart.items.push(item);
+      cart.items.push({
+        item,
+        quantity: 1,
+      });
       cart.totalPrice += item.price;
     }
     return cart;
   },
   removeItemFromCart: ({ id }) => {
     const index = cart.items.findIndex((item) => item.id === id);
+
     if (index !== -1) {
       const removedItem = cart.items.splice(index, 1)[0];
-      cart.totalPrice -= removedItem.price;
+      cart.totalPrice -= removedItem.item.price;
     }
+
     return cart;
   },
-  modifyItemQuantity: ({ id, quantity }) => {
+  modifyItemInCartQuantity: ({ id, quantity }) => {
     const item = items.find((item) => item.id === id);
     if (item) {
       const index = cart.items.findIndex((item) => item.id === id);
@@ -108,13 +118,13 @@ const resolvers = {
     }
     return cart;
   },
-  modifyItemSelectedVariant: ({ id, selectedVariant }) => {
+  modifyItemInCartSelectedVariant: ({ id, selectedVariant }) => {
     const item = items.find((item) => item.id === id);
     if (item) {
       const index = cart.items.findIndex((item) => item.id === id);
       if (index !== -1) {
         cart.items[index].selectedVariant = selectedVariant;
-        cart.items[index].image =
+        cart.items[index].item.image =
           item.variantImages[item.variants.indexOf(selectedVariant)];
       }
     }
