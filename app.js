@@ -28,7 +28,7 @@ const schema = buildSchema(`
   }
 
   type Mutation {
-    addItemToCart(id: ID!): Cart
+    addItemToCart(id: ID!, quantity: Int): Cart
     removeItemFromCart(id: ID!): Cart
     modifyItemInCartQuantity(id: ID!, quantity: Int!): Cart
     modifyItemInCartSelectedVariant(id: ID!, selectedVariant: String!): Cart
@@ -75,24 +75,37 @@ let items = [
 //   ],
 //   totalPrice: items[0].price + items[1].price * 2,
 // };
+const generateId = () => Math.random().toString(36).substr(2, 9);
 
 let cart = {
   items: [],
   totalPrice: 0,
 };
 
+const calcTotalCartPrice = () => {
+  let total = 0;
+  cart.items.forEach((item) => {
+    total += item.item.price * item.quantity;
+  });
+  return total;
+};
+
+const updateCartTotalPrice = () => (cart.totalPrice = calcTotalCartPrice());
+
 const resolvers = {
   items: () => items,
   cart: () => cart,
   cartUpdated: () => cart,
-  addItemToCart: ({ id }) => {
+  addItemToCart: ({ id, quantity = 1 }) => {
     const item = items.find((item) => item.id === id);
     if (item) {
       cart.items.push({
+        id: String(generateId()),
         item,
-        quantity: 1,
+        quantity,
       });
-      cart.totalPrice += item.price;
+      // cart.totalPrice += item.price * quantity;
+      updateCartTotalPrice();
     }
     return cart;
   },
@@ -101,7 +114,8 @@ const resolvers = {
 
     if (index !== -1) {
       const removedItem = cart.items.splice(index, 1)[0];
-      cart.totalPrice -= removedItem.item.price;
+      // cart.totalPrice -= removedItem.item.price * removedItem.quantity;
+      updateCartTotalPrice();
     }
 
     return cart;
@@ -113,7 +127,8 @@ const resolvers = {
       if (index !== -1) {
         cart.totalPrice -= cart.items[index].price * cart.items[index].quantity;
         cart.items[index].quantity = quantity;
-        cart.totalPrice += item.price * quantity;
+        // cart.totalPrice += item.price * quantity;
+        updateCartTotalPrice();
       }
     }
     return cart;
