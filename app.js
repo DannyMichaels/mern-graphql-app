@@ -1,15 +1,23 @@
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
+const cors = require('cors');
 const { itemSchema, cartSchema } = require('./schemas');
 
 const app = express();
+
+// Enable CORS
+app.use(cors());
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
   ${itemSchema}
 
   ${cartSchema}
+
+  type Subscription {
+    cartUpdated: Cart
+  }
 
   type Query {
     items: [Item]!
@@ -59,13 +67,14 @@ let items = [
 ];
 
 let cart = {
-  items: [],
+  items: [items[0]],
   totalPrice: 0,
 };
 
 const resolvers = {
   items: () => items,
   cart: () => cart,
+  cartUpdated: () => cart,
   addItemToCart: ({ id }) => {
     const item = items.find((item) => item.id === id);
     if (item) {
